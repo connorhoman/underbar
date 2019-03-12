@@ -104,11 +104,25 @@
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
   	var result = [];
-
-  	
-
-  	return result;
-  };
+  	var lastValue;
+  
+ 	if (isSorted) {
+  		var testArray = array.map(iterator);
+   		testArray.forEach(function(element, i) {
+    		if(element !== lastValue) {
+    	   		 result.push(array[i]);
+   	  		}
+   		lastValue = element;
+  	  	});
+  	} else {
+  	  	array.forEach(function(element) {
+   	   		if(result.indexOf(element) === -1) {
+   	     		result.push(element);
+   		   }
+   		});
+ 	 } 
+  return result;
+}
 
 
   // Return the results of applying an iterator to each element.
@@ -170,7 +184,19 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+  	var noAccumulator = arguments.length < 3;
+
+  	_.each(collection, function(element, index, collection) {
+  		if (noAccumulator) {
+  			noAccumulator = false;
+  			accumulator = element;
+  		} else {
+  			accumulator = iterator(accumulator, element, index, collection);
+  		}
+  	});
+  	return accumulator; 
   };
+
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
