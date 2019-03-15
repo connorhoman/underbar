@@ -66,8 +66,8 @@
     // it uses the iteration helper `each`, which you will need to write.
     var result = -1;
 
-    _.each(array, function(item, index) {
-      if (item === target && result === -1) {
+    _.each(array, function(element, index) {
+      if (element === target && result === -1) {
         result = index;
       }
     });
@@ -78,9 +78,9 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
   	var result = [];
-  	_.each(collection, function(item) {
-  		if (test(item)) {
-  			result.push(item);
+  	_.each(collection, function(element) {
+  		if (test(element)) {
+  			result.push(element);
   		}
   	});
 
@@ -92,9 +92,9 @@
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
     var result = [];
-  	_.each(collection, function(item) {
-  		if (!test(item)) {
-  			result.push(item);
+  	_.each(collection, function(element) {
+  		if (!test(element)) {
+  			result.push(element);
   		}
   	});
 
@@ -104,24 +104,33 @@
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
   	var result = [];
-  	var lastValue;
-  
- 	if (isSorted) {
-  		var testArray = array.map(iterator);
-   		testArray.forEach(function(element, i) {
-    		if(element !== lastValue) {
-    	   		 result.push(array[i]);
-   	  		}
-   		lastValue = element;
-  	  	});
-  	} else {
-  	  	array.forEach(function(element) {
-   	   		if(result.indexOf(element) === -1) {
-   	     		result.push(element);
-   		   }
-   		});
- 	 } 
-  return result;
+    var newArray = [];
+
+    for (var i = 0; i < array.length; i++) {
+      if(array[i] > array[i + 1]) {
+        var isSorted = false;
+      }
+    }
+    var isSorted = true;
+
+    if (isSorted) {
+      _.each(array, function(element) {
+
+        if(_.indexOf(newArray, element) === -1) {
+          newArray.push(element);
+          result.push(element);
+        }
+      });
+
+    } else {
+      _.each(array, function(element) {
+        if (_.indexOf(result, element) === -1) {
+          result.push(element);
+        }
+      });
+    }
+
+    return result;
 }
 
 
@@ -129,15 +138,9 @@
   _.map = function(collection, iterator) {
   	var result = [];
 
-  	if (Array.isArray(collection)) {
-  		for (var i = 0; i < collection.length; i++) {
-  			result.push(iterator(collection[i], i, collection));
-  		}
-  	} else {
-  		for (var key in collection) {
-  			result.push(iterator(collection[key], key, collection));
-  		}
-  	}
+    _.each(collection, function(element) {
+      result.push(iterator(element));
+    })
 
   	return result;
     // map() is a useful primitive iteration function that works a lot
@@ -166,19 +169,19 @@
   // Reduces an array or object to a single value by repetitively calling
   // iterator(accumulator, item) for each item. accumulator should be
   // the return value of the previous iterator call.
-  //  
+  //
   // You can pass in a starting value for the accumulator as the third argument
   // to reduce. If no starting value is passed, the first element is used as
   // the accumulator, and is never passed to the iterator. In other words, in
   // the case where a starting value is not passed, the iterator is not invoked
   // until the second element, with the first element as its second argument.
-  //  
+  //
   // Example:
   //   var numbers = [1,2,3];
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
-  //  
+  //
   //   var identity = _.reduce([5], function(total, number){
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
@@ -194,7 +197,7 @@
   			accumulator = iterator(accumulator, element, index, collection);
   		}
   	});
-  	return accumulator; 
+  	return accumulator;
   };
 
 
